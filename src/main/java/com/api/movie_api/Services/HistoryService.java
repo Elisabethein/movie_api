@@ -14,7 +14,7 @@ public class HistoryService {
     }
 
     public String addHistory(Long sessionId, Long clientId) {
-        History history = new History(sessionId, clientId);
+        History history = new History(clientId, sessionId);
         historyRepository.save(history);
         return "History added";
     }

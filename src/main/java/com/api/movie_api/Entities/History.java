@@ -18,11 +18,11 @@ public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long client_id;
-    private Long session_id;
+    private Long clientId;
+    private Long sessionId;
 
     public History(Long client_id, Long session_id) {
-        this.client_id = client_id;
-        this.session_id = session_id;
+        this.clientId = client_id;
+        this.sessionId = session_id;
     }
 }

@@ -28,4 +28,16 @@ public class MovieService {
         }
         return movie.get();
     }
+
+    public List<String> getAllGenres() {
+        return movieRepository.findAllGenres();
+    }
+
+    public List<String> getAllLanguages() {
+        return movieRepository.findAllLanguages();
+    }
+
+    public List<String> getAllAgeRestrictions() {
+        return movieRepository.findAllAgeRestrictions();
+    }
 }

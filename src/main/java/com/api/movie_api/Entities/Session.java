@@ -23,14 +23,14 @@ public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long movie_id;
-    private Long room_id;
+    private Long movieId;
+    private Long roomId;
     private LocalDate date;
     private LocalTime time;
 
     public Session(Long movie_id, Long room_id, LocalDate date, LocalTime time) {
-        this.movie_id = movie_id;
-        this.room_id = room_id;
+        this.movieId = movie_id;
+        this.roomId = room_id;
         this.date = date;
         this.time = time;
     }
