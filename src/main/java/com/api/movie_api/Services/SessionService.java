@@ -168,4 +168,42 @@ public class SessionService {
         }
         return sessions;
     }
+
+    public List<LocalTime> getAllStartTimes() {
+        return sessionRepository.findAll().stream()
+                .map(Session::getTime)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<Session> getFilteredSessions(String genre, String language, String ageRestriction, String time) {
+        List<Session> sessions = sessionRepository.findAll();
+        List<Movie> movies = movieRepository.findAll();
+        if (genre != null) {
+            sessions = sessions.stream()
+                    .filter(session -> movies.stream()
+                            .anyMatch(movie -> movie.getId().equals(session.getMovieId()) && movie.getGenre().equals(genre)))
+                    .collect(Collectors.toList());
+        }
+        if (language != null) {
+            sessions = sessions.stream()
+                    .filter(session -> movies.stream()
+                            .anyMatch(movie -> movie.getId().equals(session.getMovieId()) && movie.getLanguage().equals(language)))
+                    .collect(Collectors.toList());
+        }
+        if (ageRestriction != null) {
+            sessions = sessions.stream()
+                    .filter(session -> movies.stream()
+                            .anyMatch(movie -> movie.getId().equals(session.getMovieId()) && movie.getAgeRestriction().equals(ageRestriction)))
+                    .collect(Collectors.toList());
+        }
+        if (time != null) {
+            LocalTime selectedTime = LocalTime.parse(time);
+            sessions = sessions.stream()
+                    .filter(session -> !session.getTime().isBefore(selectedTime)) // Include movies that start at or after the selected time
+                    .collect(Collectors.toList());
+        }
+        return sessions;
+    }
 }

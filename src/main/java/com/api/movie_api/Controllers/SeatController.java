@@ -3,6 +3,7 @@ package com.api.movie_api.Controllers;
 import com.api.movie_api.Services.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,11 +19,11 @@ public class SeatController {
     }
 
     @GetMapping("/suggestedSeat/{sessionId}/{tickets}")
-    public String getSuggestedSeat(
+    public ResponseEntity<String> getSuggestedSeat(
             @PathVariable("sessionId") Long sessionId,
             @PathVariable("tickets") int tickets
     ) {
-        return seatService.getSuggestedSeat(sessionId, tickets);
+        return ResponseEntity.ok(String.valueOf(seatService.getSuggestedSeat(sessionId, tickets)));
     }
 
     @PostMapping("/bookSeat/{sessionId}/{rowNumber}/{seatNumber}")

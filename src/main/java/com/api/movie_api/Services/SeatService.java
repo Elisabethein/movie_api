@@ -102,11 +102,7 @@ public class SeatService {
                 }
             }
         }
-        StringBuilder sb = new StringBuilder();
-        for (char[] chars : seatPlan) {
-            sb.append(chars).append("\n");
-        }
         
-        return sb + "\n" + "Row: " + row + ", Seats: " + ticketList[0] + " - " + ticketList[tickets - 1];
+        return "Row: " + row + ", Seats: " + ticketList[0] + " - " + ticketList[tickets - 1];
     }
 }
