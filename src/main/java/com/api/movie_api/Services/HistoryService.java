@@ -5,6 +5,8 @@ import com.api.movie_api.Repositories.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class HistoryService {
     private final HistoryRepository historyRepository;
@@ -14,6 +16,10 @@ public class HistoryService {
     }
 
     public String addHistory(Long sessionId, Long clientId) {
+        List<History> historyList = historyRepository.findByClientIdAndSessionId(clientId, sessionId);
+        if (!historyList.isEmpty()) {
+            return "History already exists";
+        }
         History history = new History(clientId, sessionId);
         historyRepository.save(history);
         return "History added";

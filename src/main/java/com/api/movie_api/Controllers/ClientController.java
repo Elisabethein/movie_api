@@ -1,5 +1,6 @@
 package com.api.movie_api.Controllers;
 
+import com.api.movie_api.Entities.Client;
 import com.api.movie_api.Services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,13 +13,23 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/signup")
-    public String signup(@RequestParam String username, @RequestParam String password) {
+    public Client signup(@RequestParam String username, @RequestParam String password) {
         return clientService.signup(username, password);
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password) {
+    public Client login(@RequestParam String username, @RequestParam String password) {
+        System.out.println("username: " + username + " password: " + password);
         return clientService.login(username, password);
+    }
+
+    @GetMapping("/client/{id}")
+    public Client getClientById(
+            @PathVariable("id") Long id
+    ) {
+        return clientService.getClientById(id);
     }
 }

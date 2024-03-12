@@ -12,4 +12,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     Seat findByRowAndSeatAndSessionId(int row, int seat, Long session_id);
 
     List<Seat> findBySessionId(Long sessionId);
+
+    Seat findByRowAndSeat(int row, int seat);
 }

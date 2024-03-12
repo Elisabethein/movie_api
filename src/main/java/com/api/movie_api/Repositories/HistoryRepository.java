@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findAllByClientId(Long clientId);
+
+    List<History> findByClientIdAndSessionId(Long clientId, Long sessionId);
 }

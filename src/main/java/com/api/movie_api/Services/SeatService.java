@@ -5,8 +5,11 @@ import com.api.movie_api.Repositories.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SeatService {
@@ -32,6 +35,11 @@ public class SeatService {
 
     public char[][] getSeatPlan(Long sessionId) {
         List<Seat> seatList = seatRepository.findBySessionId(sessionId);
+        seatList = seatList.stream()
+                .sorted(Comparator.comparingInt(Seat::getRow)
+                        .thenComparingInt(Seat::getSeat))
+                .toList();
+        System.out.println(seatList);
         if (seatList.isEmpty()) {
             throw new IllegalStateException("Invalid session ID");
         }
@@ -42,7 +50,7 @@ public class SeatService {
         return seatPlan;
     }
 
-    public String getSuggestedSeat(Long sessionId, int tickets) {
+    public List<Seat> getSuggestedSeat(Long sessionId, int tickets) {
         char[][] seatPlan = getSeatPlan(sessionId);
         int[][] seatScore = {
                 {1, 2, 3, 4, 5, 4, 3, 2, 1},
@@ -56,9 +64,10 @@ public class SeatService {
                 {1, 2, 3, 4, 5, 4, 3, 2, 1}
         };
         int maxScore = 0;
-        int[] ticketList = new int[tickets];
-        int row = 0;
+        List<Seat> suggestedSeats = new ArrayList<>();
+
         int i = seatScore.length / 2;
+
         for (int j = 0; j <= seatScore.length / 2; j++) {
             int rowIndex1 = i + j;
             int rowIndex2 = i - j;
@@ -74,9 +83,9 @@ public class SeatService {
                 }
                 if (currentScore > maxScore) {
                     maxScore = currentScore;
+                    suggestedSeats.clear();
                     for (int l = 0; l < tickets; l++) {
-                        ticketList[l] = k + l + 1;
-                        row = rowIndex1 + 1;
+                        suggestedSeats.add(seatRepository.findByRowAndSeatAndSessionId(rowIndex1+1, k+l+1, sessionId));
                     }
                 }
             }
@@ -95,14 +104,17 @@ public class SeatService {
                 }
                 if (currentScore > maxScore) {
                     maxScore = currentScore;
+                    suggestedSeats.clear();
                     for (int l = 0; l < tickets; l++) {
-                        ticketList[l] = k + l + 1;
-                        row = rowIndex2 + 1;
+                        suggestedSeats.add(seatRepository.findByRowAndSeatAndSessionId(rowIndex2+1, k+l+1, sessionId));
                     }
                 }
             }
         }
-        
-        return "Row: " + row + ", Seats: " + ticketList[0] + " - " + ticketList[tickets - 1];
+        return suggestedSeats;
+    }
+
+    public Seat getSeat(Long sessionId, int rowNumber, int seatNumber) {
+        return seatRepository.findByRowAndSeatAndSessionId(rowNumber, seatNumber, sessionId);
     }
 }

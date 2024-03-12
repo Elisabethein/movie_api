@@ -91,6 +91,9 @@ public class SessionService {
     }
 
     public List<Session> getSessionByHistory(Long clientId) {
+        if (clientId == null) {
+            return getAllSessions();
+        }
         List<History> clientHistory = historyRepository.findAllByClientId(clientId);
         List<Session> allSessions = sessionRepository.findAll();
         List<Session> sessions = getAllSessions();
@@ -178,7 +181,7 @@ public class SessionService {
     }
 
     public List<Session> getFilteredSessions(String genre, String language, String ageRestriction, String time) {
-        List<Session> sessions = sessionRepository.findAll();
+        List<Session> sessions = getAllSessions();
         List<Movie> movies = movieRepository.findAll();
         if (genre != null) {
             sessions = sessions.stream()

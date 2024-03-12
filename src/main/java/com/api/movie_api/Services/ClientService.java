@@ -16,7 +16,7 @@ public class ClientService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String signup(String username, String password) {
+    public Client signup(String username, String password) {
         Client withUsername = clientRepository.findByUsername(username);
         if (withUsername != null) {
             throw new IllegalStateException("Username already exists");
@@ -24,10 +24,10 @@ public class ClientService {
         String hashedPassword = passwordEncoder.encode(password);
         Client client = new Client(username, hashedPassword);
         clientRepository.save(client);
-        return "User created";
+        return client;
     }
 
-    public String login(String username, String password) {
+    public Client login(String username, String password) {
         Client client = clientRepository.findByUsername(username);
         if (client == null) {
             throw new IllegalStateException("User does not exist");
@@ -35,6 +35,10 @@ public class ClientService {
         if (!passwordEncoder.matches(password, client.getPassword())) {
             throw new IllegalStateException("Invalid password");
         }
-        return "Login successful";
+        return client;
+    }
+
+    public Client getClientById(Long id) {
+        return clientRepository.findById(id).orElse(null);
     }
 }

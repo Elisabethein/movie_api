@@ -1,10 +1,13 @@
 package com.api.movie_api.Controllers;
 
+import com.api.movie_api.Entities.Seat;
 import com.api.movie_api.Services.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -19,11 +22,11 @@ public class SeatController {
     }
 
     @GetMapping("/suggestedSeat/{sessionId}/{tickets}")
-    public ResponseEntity<String> getSuggestedSeat(
+    public ResponseEntity<List<Seat>> getSuggestedSeat(
             @PathVariable("sessionId") Long sessionId,
             @PathVariable("tickets") int tickets
     ) {
-        return ResponseEntity.ok(String.valueOf(seatService.getSuggestedSeat(sessionId, tickets)));
+        return ResponseEntity.ok(seatService.getSuggestedSeat(sessionId, tickets));
     }
 
     @PostMapping("/bookSeat/{sessionId}/{rowNumber}/{seatNumber}")
@@ -33,5 +36,14 @@ public class SeatController {
             @PathVariable("seatNumber") int seatNumber
     ) {
         return seatService.bookSeat(sessionId, rowNumber, seatNumber);
+    }
+
+    @GetMapping("/seat/{sessionId}/{rowNumber}/{seatNumber}")
+    public Seat getSeat(
+            @PathVariable("sessionId") Long sessionId,
+            @PathVariable("rowNumber") int rowNumber,
+            @PathVariable("seatNumber") int seatNumber
+    ) {
+        return seatService.getSeat(sessionId, rowNumber, seatNumber);
     }
 }
