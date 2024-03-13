@@ -1,13 +1,8 @@
 package com.api.movie_api.Components;
 
-import com.api.movie_api.Entities.Movie;
-import com.api.movie_api.Entities.Room;
-import com.api.movie_api.Entities.Seat;
-import com.api.movie_api.Entities.Session;
-import com.api.movie_api.Repositories.MovieRepository;
-import com.api.movie_api.Repositories.RoomRepository;
-import com.api.movie_api.Repositories.SeatRepository;
-import com.api.movie_api.Repositories.SessionRepository;
+import com.api.movie_api.Entities.*;
+import com.api.movie_api.Repositories.*;
+import com.api.movie_api.Services.ClientService;
 import com.api.movie_api.Services.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -30,17 +25,28 @@ public class DataInitializer implements ApplicationRunner {
     private final SessionRepository sessionRepository;
     private final SeatRepository seatRepository;
     private final SessionService sessionService;
+    private final ClientRepository clientRepository;
+    private final ClientService clientService;
 
     @Autowired
-    public DataInitializer(MovieRepository movieRepository, RoomRepository roomRepository, SessionRepository sessionRepository, SeatRepository seatRepository, SessionService sessionService) {
+    public DataInitializer(MovieRepository movieRepository, RoomRepository roomRepository, SessionRepository sessionRepository, SeatRepository seatRepository, SessionService sessionService, ClientRepository clientRepository, ClientService clientService) {
         this.movieRepository = movieRepository;
         this.roomRepository = roomRepository;
         this.sessionRepository = sessionRepository;
         this.seatRepository = seatRepository;
         this.sessionService = sessionService;
+        this.clientRepository = clientRepository;
+        this.clientService = clientService;
     }
+
+    /**
+     * This method fills the database with initial data
+     * @param args incoming application arguments
+     * @throws Exception if there is an error
+     */
     @Override
-    public void run(ApplicationArguments args) throws Exception{
+    public void run(ApplicationArguments args) throws Exception {
+        // If there are no movies in the database, add some
         if (movieRepository.findAll().isEmpty()) {
             List<Movie> movieList = List.of(
                     new Movie("The Shawshank Redemption", "Drama", "", "English"),
@@ -55,8 +61,9 @@ public class DataInitializer implements ApplicationRunner {
                     new Movie("The Lord of the Rings: The Two Towers", "Adventure", "", "English"),
                     new Movie("The Godfather: Part II", "Crime", "", "English")
             );
-        movieRepository.saveAll(movieList);
+            movieRepository.saveAll(movieList);
         }
+        // If there are no rooms in the database, add some
         if (roomRepository.findAll().isEmpty()) {
             List<Room> roomList = List.of(
                     new Room(),
@@ -65,11 +72,15 @@ public class DataInitializer implements ApplicationRunner {
             );
             roomRepository.saveAll(roomList);
         }
+        // If there are no users in the database, add one
+        if (clientRepository.findAll().isEmpty()){
+            clientService.login("test", "Proov_123");
+        }
 
+        // If there are too many sessions for the following week, don't add more, else add one session for each day with random movie and room
         if (sessionService.getAllSessions().size() > 20) {
             return;
-        }
-        else {
+        } else {
             List<Movie> movieList = movieRepository.findAll();
             List<Room> roomList = roomRepository.findAll();
             List<Session> sessions = new ArrayList<>();
@@ -82,6 +93,7 @@ public class DataInitializer implements ApplicationRunner {
                 sessionRepository.save(session);
             }
 
+            // Add 9x9 seats for each added session, with 30% chance that the seat is taken
             for (Session session : sessions) {
                 for (int i = 1; i < 10; i++) {
                     for (int j = 1; j < 10; j++) {

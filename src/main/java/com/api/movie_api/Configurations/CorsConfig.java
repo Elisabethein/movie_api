@@ -1,7 +1,9 @@
 package com.api.movie_api.Configurations;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 /**
  * This class is responsible for configuring the CORS policy for the application.
  * It allows requests from port 5173, which is the port used by the frontend application.
@@ -12,9 +14,9 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080") // Allow requests from any origin
-                .allowedMethods("*") // Allowed HTTP methods
-                .allowedHeaders("*") // Allowed headers
+                .allowedOrigins("http://localhost:8080", "http://localhost:8081") // Allow requests port 8080, which is the port used by the frontend application
+                .allowedMethods("*")
+                .allowedHeaders("*")
                 .allowCredentials(true);
     }
 }

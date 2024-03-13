@@ -18,20 +18,25 @@ public class MovieController {
     public List<Movie> getAllMovies() {
         return movieService.getAllMovies();
     }
+
     @GetMapping("/movie/{id}")
     public Movie getMovieById(
             @PathVariable("id") Long id
     ) {
         return movieService.getMovieById(id);
     }
+
+    // Endpoints for getting all possible genres, languages and age restrictions for the movies currently playing
     @GetMapping("/allGenres")
     public List<String> getAllGenres() {
         return movieService.getAllGenres();
     }
+
     @GetMapping("/allLanguages")
     public List<String> getAllLanguages() {
         return movieService.getAllLanguages();
     }
+
     @GetMapping("/allAgeRestrictions")
     public List<String> getAllAgeRestrictions() {
         return movieService.getAllAgeRestrictions();
