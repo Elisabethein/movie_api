@@ -11,6 +11,12 @@ java {
 	sourceCompatibility = '21'
 }
 
+bootJar {
+	mainClass = 'com.api.movie_api.MovieApiApplication'
+	archiveFileName = 'MovieApiApplication.jar'
+	destinationDirectory = file('/')
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -32,6 +38,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	//developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

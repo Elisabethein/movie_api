@@ -30,7 +30,6 @@ public class MovieTests {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse().getContentAsString();
         Session session = objectMapper.readValue(responseContent, Session.class);
-
         assertNotNull(session);
         assertEquals(1, session.getId());
     }
