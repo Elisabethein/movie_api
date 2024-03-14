@@ -74,7 +74,7 @@ public class DataInitializer implements ApplicationRunner {
         }
         // If there are no users in the database, add one
         if (clientRepository.findAll().isEmpty()){
-            clientService.login("test", "Proov_123");
+            clientService.signup("test", "Proov_123");
         }
 
         // If there are too many sessions for the following week, don't add more, else add one session for each day with random movie and room
