@@ -1,15 +1,18 @@
 version: '3.9'
 services:
   db:
-    image: 'postgres:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile-db
     environment:
-      - 'POSTGRES_DB=moviedb'
+      - 'POSTGRES_DB=moviedatabase'
       - 'POSTGRES_PASSWORD=sql'
       - 'POSTGRES_USER=postgres'
     ports:
       - '5432:5432'
 
   movie-api:
+    image: 'movie-api:latest'
     build:
       dockerfile: Dockerfile
     container_name: movie-api-application
@@ -18,13 +21,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/moviedb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/moviedatabase
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: sql
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   frontend:
+    image: 'vue-frontend:latest'
     build:
       context: ./movie_application
       dockerfile: Dockerfile

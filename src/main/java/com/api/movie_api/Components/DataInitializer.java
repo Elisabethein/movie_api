@@ -4,10 +4,12 @@ import com.api.movie_api.Entities.*;
 import com.api.movie_api.Repositories.*;
 import com.api.movie_api.Services.ClientService;
 import com.api.movie_api.Services.SessionService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -46,22 +48,33 @@ public class DataInitializer implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
         // If there are no movies in the database, add some
         if (movieRepository.findAll().isEmpty()) {
-            List<Movie> movieList = List.of(
-                    new Movie("The Shawshank Redemption", "Drama", "", "English"),
-                    new Movie("The Godfather", "Crime", "", "English"),
-                    new Movie("The Dark Knight", "Action", "", "English"),
-                    new Movie("The Lord of the Rings: The Return of the King", "Adventure", "", "English"),
-                    new Movie("Pulp Fiction", "Crime", "", "English"),
-                    new Movie("Forrest Gump", "Drama", "", "English"),
-                    new Movie("Inception", "Action", "", "English"),
-                    new Movie("The Matrix", "Action", "", "English"),
-                    new Movie("The Lord of the Rings: The Fellowship of the Ring", "Adventure", "", "English"),
-                    new Movie("The Lord of the Rings: The Two Towers", "Adventure", "", "English"),
-                    new Movie("The Godfather: Part II", "Crime", "", "English")
-            );
-            movieRepository.saveAll(movieList);
+            String apiKey = "e1d67a20"; // Replace with your actual API key
+            String[] movieTitles = {"The Shawshank Redemption", "The Godfather", "The Dark Knight",
+                    "The Lord of the Rings: The Return of the King", "Pulp Fiction",
+                    "Forrest Gump", "Inception", "The Matrix",
+                    "The Lord of the Rings: The Fellowship of the Ring",
+                    "The Lord of the Rings: The Two Towers", "The Godfather: Part II", "The Notebook"};
+            RestTemplate restTemplate = new RestTemplate();
+            for (String title : movieTitles) {
+                String url = "https://www.omdbapi.com/?apikey=" + apiKey + "&t=" + title.replace(" ", "+");
+                String response = restTemplate.getForObject(url, String.class);
+
+                if (response != null) {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    Movie movie = new Movie();
+                    movie.setTitle(title);
+                    movie.setGenre(jsonObject.getString("Genre").split(",")[0].trim());
+                    movie.setRating(jsonObject.getString("imdbRating").equals("N/A") ? 0 : Double.parseDouble(jsonObject.getString("imdbRating")));
+                    movie.setLanguage(jsonObject.getString("Language").split(",")[0].trim());
+                    movie.setAgeRestriction(jsonObject.getString("Rated"));
+
+                    movieRepository.save(movie);
+                }
+            }
         }
         // If there are no rooms in the database, add some
         if (roomRepository.findAll().isEmpty()) {

@@ -28,7 +28,6 @@ public class SessionController {
     public Session getSessionById(
             @PathVariable("id") Long id
     ) {
-        System.out.println(sessionService.getSessionById(id));
         return sessionService.getSessionById(id);
     }
 

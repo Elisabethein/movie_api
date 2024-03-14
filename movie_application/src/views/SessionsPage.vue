@@ -10,10 +10,14 @@
                  :to="{name: 'ASessionPage', params: {id: session.id}}">
       <img src="@/assets/roman-skrypnyk-gjA24divsqw-unsplash.jpg" alt="movie poster" class="poster">
       <div class="session-info">
-        <b>{{ movieTitles[session.id] }}</b>
+        <div class="info-container">
+        <b>{{ this.movieTitles[session.id]?.title }}</b>
         <p>{{ parseString(session.date) }}</p>
         <p>Starts at: {{ session.time }}</p>
+        </div>
+        <div class="rating-container"><p>IMDB rating:</p> {{ this.movieTitles[session.id]?.rating }}</div>
       </div>
+
     </router-link>
   </div>
 </template>
@@ -63,7 +67,10 @@ export default {
         for (const session of this.sessions) {
           const response = await fetch(`http://localhost:8080/api/movie/${session.movieId}`);
           const data = await response.json();
-          this.movieTitles[session.id] = data.title;
+          this.movieTitles[session.id] = {
+            title: data.title,
+            rating: data.rating
+          };
         }
       } catch (err) {
         console.error(err.message);
@@ -144,10 +151,30 @@ h1, b {
   width: 100%;
   background-color: #f3eaeb;
   border-radius: 15px;
+  display: flex;
 }
 
 .session-container:hover {
   transform: scale(1.05);
+}
+
+.info-container {
+  width: 80%;
+}
+.rating-container {
+  width: 20%;
+  height: fit-content;
+  background-color: #ffffff;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 10px;
+}
+.rating-container p {
+  font-size: small;
 }
 
 </style>

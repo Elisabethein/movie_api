@@ -6,8 +6,9 @@
         <p>Date: {{ session.date }}</p>
         <p>Starting time: {{ session.time }}</p>
         <p>Genre: {{ movie.genre }}</p>
+        <p>IMDB rating: {{ movie.rating }}</p>
         <p>Language: {{ movie.language }}</p>
-        <p v-if="movie.ageRestriction !== ''">Age Restrictions: {{ movie.ageRestriction }}</p>
+        <p v-if="movie.ageRestriction !== ''">Rated: {{ movie.ageRestriction }}</p>
       </div>
     </div>
     <b>Select how many seats would you like to purchase:</b><br>

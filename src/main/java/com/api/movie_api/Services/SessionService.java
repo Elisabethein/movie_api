@@ -29,7 +29,7 @@ public class SessionService {
     }
 
     /**
-     * Get all sessions that are scheduled for the future and sort them by date and time
+     * Get all sessions that are scheduled for the future and sort them by date and time, and then by rating
      *
      * @return a list of sessions
      */
@@ -41,7 +41,10 @@ public class SessionService {
                     return sessionDateTime.isAfter(now);
                 })
                 .sorted(Comparator.comparing(Session::getDate)
-                        .thenComparing(Session::getTime))
+                        .thenComparing(Session::getTime)
+                        .thenComparing(session -> movieRepository.findById(session.getMovieId())
+                                .map(Movie::getRating)
+                                .orElse(0.0), Comparator.reverseOrder()))
                 .collect(Collectors.toList());
     }
 
@@ -198,7 +201,21 @@ public class SessionService {
                     long timeDifference2 = Math.abs(session2.getTime().toSecondOfDay() -
                             medianTime.toSecondOfDay());
 
-                    return Long.compare(timeDifference1, timeDifference2);
+                    int timeComparison = Long.compare(timeDifference1, timeDifference2);
+
+                    // If the times are the same, sort by rating
+                    if (timeComparison == 0) {
+                        int rating1 = movieRepository.findById(session1.getMovieId())
+                                .map(Movie::getRating)
+                                .orElse(0.0).intValue();
+                        int rating2 = movieRepository.findById(session2.getMovieId())
+                                .map(Movie::getRating)
+                                .orElse(0.0).intValue();
+
+                        return Integer.compare(rating2, rating1);
+                    } else {
+                        return timeComparison;
+                    }
                 }
             });
         }

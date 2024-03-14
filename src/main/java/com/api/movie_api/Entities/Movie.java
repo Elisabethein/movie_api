@@ -20,11 +20,13 @@ public class Movie {
     private String genre;
     private String ageRestriction;
     private String language;
+    private double rating;
 
-    public Movie(String title, String genre, String ageRestriction, String language) {
+    public Movie(String title, String genre, String ageRestriction, String language, double rating) {
         this.title = title;
         this.genre = genre;
         this.ageRestriction = ageRestriction;
         this.language = language;
+        this.rating = rating;
     }
 }
